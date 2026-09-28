@@ -12,6 +12,9 @@ repositories {
 dependencies {
     testImplementation platform('org.junit:junit-bom:6.0.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation("com.codeborne:selenide:7.18.2")
+    testImplementation 'net.datafaker:datafaker:2.7.0'
+
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
