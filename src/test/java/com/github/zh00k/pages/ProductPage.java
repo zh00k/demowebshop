@@ -1,24 +1,26 @@
 package com.github.zh00k.pages;
 
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
 import java.math.BigDecimal;
 
-import static com.codeborne.selenide.Condition.exactText;
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selectors.byText;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 
 public class ProductPage extends BasePage<ProductPage> {
 
     private final String name;
+
+    private final ElementsCollection productAttributes = $$("div.attributes dt");
 
     private final SelenideElement productName                         = $("div.product-name > h1");
     private final SelenideElement price                               = $("span[itemprop='price']");
     private final SelenideElement addToCartButton                     = $("input.add-to-cart-button");
     private final SelenideElement successfullyAddedToCartNotification = $("div#bar-notification.success");
     private final SelenideElement qtyInput                            = $("input.qty-input");
-    private final SelenideElement slowProcessorOption                 = $(byText("Slow"));
+    private final SelenideElement processorBlock                      = productAttributes.findBy(text("Processor")).sibling(0);
 
     public ProductPage(String name) {
         super(null, name);
@@ -50,8 +52,11 @@ public class ProductPage extends BasePage<ProductPage> {
         return new BigDecimal(price.getText());
     }
 
-    public ProductPage selectProcessor() {
-        slowProcessorOption.click();
+    /**
+     * index 0 = slow, 1 = medium, 2 = fast
+     */
+    public ProductPage selectProcessor(int index) {
+        processorBlock.$$("input[type=radio]").get(index).click();
         return this;
     }
 }

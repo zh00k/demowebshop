@@ -29,7 +29,7 @@ public class CartTest extends BaseTest {
                 .openProduct(productName)
                 .shouldBeOpened()
                 .setItemQuantity(itemQuantity)
-                .selectProcessor();
+                .selectProcessor(0);
 
         BigDecimal itemPrice        = productPage.getItemPrice();
         BigDecimal expectedSubtotal = itemPrice.multiply(new BigDecimal(itemQuantity));
