@@ -3,6 +3,8 @@ package com.github.zh00k.pages;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
+import java.math.BigDecimal;
+
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.exactValue;
 import static com.codeborne.selenide.Selenide.$$;
@@ -15,11 +17,11 @@ public class CartPage extends BasePage<CartPage> {
         super("/cart", TITLE_PREFIX + "Shopping Cart");
     }
 
-    public CartPage shouldContainProduct(String name, int quantity, float price) {
+    public CartPage shouldContainProduct(String name, int quantity, BigDecimal subtotal) {
         SelenideElement row = productNames.findBy(exactText(name)).closest("tr");
 
         row.$("input.qty-input").shouldHave(exactValue(String.valueOf(quantity)));
-        row.$("span.product-subtotal").shouldHave(exactValue(String.valueOf(price)));
+        row.$("span.product-subtotal").shouldHave(exactText(subtotal.toPlainString()));
         return this;
     }
 }

@@ -1,10 +1,12 @@
 package com.github.zh00k.test;
 
-import com.github.zh00k.pages.CartPage;
+import com.github.zh00k.pages.ProductPage;
 import com.github.zh00k.pages.WelcomePage;
 import com.github.zh00k.steps.UserSteps;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
 
 
 public class CartTest extends BaseTest {
@@ -20,13 +22,19 @@ public class CartTest extends BaseTest {
 
         int itemQuantity = 2;
 
-        new WelcomePage()
+        ProductPage productPage = new WelcomePage()
                 .open()
                 .headerMenu()
                 .openSubcategory("Computers", "Desktops")
                 .openProduct(productName)
                 .shouldBeOpened()
-                .setQuantity(2)
+                .setItemQuantity(itemQuantity)
+                .selectProcessor();
+
+        BigDecimal itemPrice        = productPage.getItemPrice();
+        BigDecimal expectedSubtotal = itemPrice.multiply(new BigDecimal(itemQuantity));
+
+        productPage
                 .clickAddToCartButton()
                 .shouldShowAddedToCartNotification()
                 .header()
@@ -34,6 +42,6 @@ public class CartTest extends BaseTest {
                 .clickCart()
                 .shouldBeOpened()
                 .shouldHaveCorrectTitle()
-                .shouldContainProduct(productName, itemQuantity, 1600);
+                .shouldContainProduct(productName, itemQuantity, expectedSubtotal);
     }
 }
