@@ -2,6 +2,7 @@ package com.github.zh00k.pages;
 
 import com.codeborne.selenide.Selenide;
 import com.github.zh00k.pages.components.Header;
+import com.github.zh00k.pages.components.HeaderMenu;
 
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverConditions.title;
@@ -21,6 +22,10 @@ public abstract class BasePage<T extends BasePage<T>> {
 
     public Header header() {
         return new Header();
+    }
+
+    public HeaderMenu headerMenu() {
+        return new HeaderMenu();
     }
 
     public T open() {

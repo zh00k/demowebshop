@@ -1,7 +1,8 @@
 package com.github.zh00k.pages;
 
 import com.codeborne.selenide.SelenideElement;
-import com.github.zh00k.data.Subcategory;
+
+import java.util.Objects;
 
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selenide.$;
@@ -10,8 +11,8 @@ public class SubcategoryPage extends BasePage<SubcategoryPage> {
 
     private final SelenideElement productGrid = $("div.product-grid");
 
-    public SubcategoryPage(Subcategory subcategory) {
-        super("/" + subcategory.path(), TITLE_PREFIX + subcategory.title());
+    public SubcategoryPage(String path, String title) {
+        super("/" + Objects.requireNonNull(path, "path не должен быть null"), TITLE_PREFIX + title);
     }
 
     public ProductPage openProduct(String name) {
