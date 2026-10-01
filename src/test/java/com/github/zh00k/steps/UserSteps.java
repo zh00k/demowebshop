@@ -8,7 +8,7 @@ public class UserSteps {
 
     public User registerUser() {
         RegistrationPage registrationPage = new RegistrationPage();
-        User user = DataGenerator.randomUser();
+        User             user             = DataGenerator.randomUser();
 
         registrationPage
                 .open()

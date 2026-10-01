@@ -17,7 +17,6 @@ public class RegisterResultPage extends BasePage<RegisterResultPage> {
     public RegisterResultPage shouldBeRegistered(String email) {
         resultText.shouldHave(text("Your registration completed"));
         header().shouldBeLoggedInAs(email);
-
         return this;
     }
 
