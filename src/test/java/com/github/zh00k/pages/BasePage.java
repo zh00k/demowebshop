@@ -24,6 +24,10 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     public T open() {
+        if (pageUrl == null) {
+            throw new IllegalStateException(getClass().getSimpleName() + " не открывается по прямому URL");
+        }
+
         Selenide.open(pageUrl);
         return self();
     }

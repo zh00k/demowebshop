@@ -9,13 +9,11 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 public class Header {
-    private final SelenideElement root = $("div.header");
-
+    private final SelenideElement root         = $("div.header");
     private final SelenideElement registerLink = root.$("a.ico-register");
-    private final SelenideElement loginLink = root.$("a.ico-login");
-    private final SelenideElement logOutLink = root.$("a.ico-logout");
-
-    private final SelenideElement userEmail = root.$("a.account");
+    private final SelenideElement loginLink    = root.$("a.ico-login");
+    private final SelenideElement logOutLink   = root.$("a.ico-logout");
+    private final SelenideElement userEmail    = root.$("a.account");
 
     public RegistrationPage clickRegister() {
         registerLink.click();
