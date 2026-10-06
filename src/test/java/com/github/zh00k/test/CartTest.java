@@ -4,6 +4,8 @@ import com.github.zh00k.pages.ProductPage;
 import com.github.zh00k.pages.WelcomePage;
 import com.github.zh00k.steps.UserSteps;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -17,7 +19,9 @@ public class CartTest extends BaseTest {
     }
 
     @Test
-    void addItemToCart() {
+    @DisplayName("Добавление нескольких единиц товара в корзину авторизованным пользователем")
+    @Tag("positive")
+    void addItemsToCart() {
         String productName = "Build your own cheap computer";
 
         int itemQuantity = 2;
