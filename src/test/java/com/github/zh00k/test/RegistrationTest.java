@@ -4,13 +4,15 @@ import com.github.zh00k.data.DataGenerator;
 import com.github.zh00k.data.User;
 import com.github.zh00k.pages.WelcomePage;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 public class RegistrationTest extends BaseTest {
     private final WelcomePage welcomePage = new WelcomePage();
 
     @Test
-    @DisplayName("Успешная регистрация с валидными данными")
+    @DisplayName("Регистрация нового пользователя со всеми заполненными полями")
+    @Tag("positive")
     void successfulRegistrationWithValidData() {
         User user = DataGenerator.randomUser();
 
