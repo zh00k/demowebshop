@@ -3,9 +3,11 @@ package com.github.zh00k.steps;
 import com.github.zh00k.data.DataGenerator;
 import com.github.zh00k.data.User;
 import com.github.zh00k.pages.RegistrationPage;
+import io.qameta.allure.Step;
 
 public class UserSteps {
 
+    @Step("Зарегистрировать нового пользователя")
     public User registerUser() {
         RegistrationPage registrationPage = new RegistrationPage();
         User             user             = DataGenerator.randomUser();
