@@ -2,13 +2,15 @@ package com.github.zh00k.pages;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-
-import java.math.BigDecimal;
 import io.qameta.allure.Step;
 
-import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Condition.exactText;
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
+
+import java.math.BigDecimal;
 
 public class ProductPage extends BasePage<ProductPage> {
 
@@ -24,7 +26,7 @@ public class ProductPage extends BasePage<ProductPage> {
     private final SelenideElement processorBlock                      = productAttributes.findBy(text("Processor")).sibling(0);
 
     public ProductPage(String name) {
-        super(null, name);
+        super(null, TITLE_PREFIX + name);
         this.name = name;
     }
 
@@ -58,12 +60,9 @@ public class ProductPage extends BasePage<ProductPage> {
         return new BigDecimal(price.getText());
     }
 
-    /**
-     * index 0 = slow, 1 = medium, 2 = fast
-     */
-    @Step("Выбрать процессор с индексом {index}")
-    public ProductPage selectProcessor(int index) {
-        processorBlock.$$("input[type=radio]").get(index).click();
+    @Step("Выбрать процессор с названием {processor}")
+    public ProductPage selectProcessor(String processor) {
+        processorBlock.$$("li").findBy(text(processor)).$("input").click();
         return this;
     }
 }

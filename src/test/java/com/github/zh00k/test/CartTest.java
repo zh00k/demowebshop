@@ -1,5 +1,6 @@
 package com.github.zh00k.test;
 
+import com.github.zh00k.pages.CartPage;
 import com.github.zh00k.pages.ProductPage;
 import com.github.zh00k.pages.WelcomePage;
 import com.github.zh00k.steps.UserSteps;
@@ -15,11 +16,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
-
 import static com.github.zh00k.config.Config.KAITEN_ALLURE_URL;
 import static com.github.zh00k.config.Config.KAITEN_ARCHITECTURE_URL;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.math.BigDecimal;
 
 @Epic("Demo Web Shop")
 @Feature("Корзина")
@@ -40,29 +42,44 @@ public class CartTest extends BaseTest {
     @Story("Добавление товара в корзину")
     void addItemsToCart() {
         String productName = "Build your own cheap computer";
+        String processor   = "Fast";
 
         int itemQuantity = 2;
 
         ProductPage productPage = new WelcomePage()
                 .open()
                 .headerMenu()
-                .openSubcategory("Computers", "Desktops")
+                .openSubcategory("Computers", "Desktops", "desktops")
                 .openProduct(productName)
                 .shouldBeOpened()
                 .setItemQuantity(itemQuantity)
-                .selectProcessor(0);
+                .selectProcessor(processor);
 
-        BigDecimal itemPrice        = productPage.getItemPrice();
-        BigDecimal expectedSubtotal = itemPrice.multiply(new BigDecimal(itemQuantity));
+        BigDecimal expectedUnitPrice = productPage.getItemPrice().add(processorSurcharge(processor));
+        BigDecimal expectedSubtotal  = expectedUnitPrice.multiply(new BigDecimal(itemQuantity));
 
-        productPage
+        CartPage cartPage = productPage
                 .clickAddToCartButton()
                 .shouldShowAddedToCartNotification()
                 .header()
                 .cartShouldHaveQuantity(itemQuantity)
                 .clickCart()
                 .shouldBeOpened()
-                .shouldHaveCorrectTitle()
-                .shouldContainProduct(productName, itemQuantity, expectedSubtotal);
+                .shouldHaveCorrectTitle();
+
+        assertAll(
+                () -> assertEquals(String.valueOf(itemQuantity), cartPage.getQuantity(productName)),
+                () -> assertEquals(expectedUnitPrice.toPlainString(), cartPage.getUnitPrice(productName)),
+                () -> assertEquals(expectedSubtotal.toPlainString(), cartPage.getSubtotal(productName))
+        );
+    }
+
+    private BigDecimal processorSurcharge(String processor) {
+        return switch (processor) {
+            case "Slow" -> BigDecimal.ZERO;
+            case "Medium" -> new BigDecimal("15.00");
+            case "Fast" -> new BigDecimal("100.00");
+            default -> throw new IllegalArgumentException("Unknown processor: " + processor);
+        };
     }
 }
