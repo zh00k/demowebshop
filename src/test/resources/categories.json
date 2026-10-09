@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Браузер: окно закрыто или потеряно",
+    "matchedStatuses": ["failed", "broken"],
+    "messageRegex": "(?s).*NoSuchWindowException.*"
+  },
+  {
+    "name": "Элемент не найден",
+    "matchedStatuses": ["failed", "broken"],
+    "messageRegex": "(?s)(?!.*NoSuchWindowException).*Element not found.*"
+  },
+  {
+    "name": "Элемент в неверном состоянии",
+    "matchedStatuses": ["failed"],
+    "messageRegex": "(?s).*Element should (have|be|not).*"
+  },
+  {
+    "name": "Таймауты и сеть",
+    "matchedStatuses": ["broken"],
+    "messageRegex": "(?s).*(TimeoutException|ERR_CONNECTION|ERR_NAME_NOT_RESOLVED).*"
+  },
+  {
+    "name": "Пропущенные тесты",
+    "matchedStatuses": ["skipped"]
+  }
+]

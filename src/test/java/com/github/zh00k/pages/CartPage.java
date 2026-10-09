@@ -4,6 +4,7 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
 import java.math.BigDecimal;
+import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.exactValue;
@@ -17,6 +18,7 @@ public class CartPage extends BasePage<CartPage> {
         super("/cart", TITLE_PREFIX + "Shopping Cart");
     }
 
+    @Step("Проверить, что в корзине товар «{name}»: {quantity} шт. на сумму {subtotal}")
     public CartPage shouldContainProduct(String name, int quantity, BigDecimal subtotal) {
         SelenideElement row = productNames.findBy(exactText(name)).closest("tr");
 

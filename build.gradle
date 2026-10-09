@@ -1,9 +1,12 @@
 plugins {
     id 'java'
+    id 'io.qameta.allure' version '3.0.1'
 }
 
 group = 'com.github.zh00k'
 version = '1.0-SNAPSHOT'
+
+def allureVersion = "2.32.0"
 
 repositories {
     mavenCentral()
@@ -11,9 +14,11 @@ repositories {
 
 dependencies {
     testImplementation platform('org.junit:junit-bom:6.0.0')
+
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation("com.codeborne:selenide:7.18.2")
+    testImplementation 'com.codeborne:selenide:7.18.2'
     testImplementation 'net.datafaker:datafaker:2.7.0'
+    testImplementation "io.qameta.allure:allure-selenide:$allureVersion"
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
@@ -34,4 +39,19 @@ tasks.register('negativeTests', Test) {
     classpath = sourceSets.test.runtimeClasspath
 
     useJUnitPlatform { includeTags 'negative' }
+}
+
+allure {
+    report {
+        version.set(allureVersion)
+    }
+    adapter {
+        aspectjWeaver.set(true)
+        aspectjVersion.set("1.9.25.1")
+        frameworks {
+            junit5 {
+                adapterVersion.set(allureVersion)
+            }
+        }
+    }
 }

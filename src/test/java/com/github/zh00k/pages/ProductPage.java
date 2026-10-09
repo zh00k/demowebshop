@@ -4,6 +4,7 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
 import java.math.BigDecimal;
+import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
@@ -28,26 +29,31 @@ public class ProductPage extends BasePage<ProductPage> {
     }
 
     @Override
+    @Step("Проверить, что открыта страница товара")
     public ProductPage shouldBeOpened() {
         productName.shouldHave(exactText(name));
         return this;
     }
 
+    @Step("Проверить уведомление о добавлении в корзину")
     public ProductPage shouldShowAddedToCartNotification() {
         successfullyAddedToCartNotification.shouldBe(visible);
         return this;
     }
 
+    @Step("Нажать кнопку «Add to cart»")
     public ProductPage clickAddToCartButton() {
         addToCartButton.click();
         return this;
     }
 
+    @Step("Указать количество товара: {quantity}")
     public ProductPage setItemQuantity(int quantity) {
         qtyInput.setValue(String.valueOf(quantity));
         return this;
     }
 
+    @Step("Получить цену товара")
     public BigDecimal getItemPrice() {
         return new BigDecimal(price.getText());
     }
@@ -55,6 +61,7 @@ public class ProductPage extends BasePage<ProductPage> {
     /**
      * index 0 = slow, 1 = medium, 2 = fast
      */
+    @Step("Выбрать процессор с индексом {index}")
     public ProductPage selectProcessor(int index) {
         processorBlock.$$("input[type=radio]").get(index).click();
         return this;

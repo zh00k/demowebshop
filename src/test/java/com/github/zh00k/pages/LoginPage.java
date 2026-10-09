@@ -1,6 +1,7 @@
 package com.github.zh00k.pages;
 
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selenide.$;
@@ -20,26 +21,31 @@ public class LoginPage extends BasePage<LoginPage> {
         super("/login", TITLE_PREFIX + "Login");
     }
 
+    @Step("Ввести email «{email}»")
     public LoginPage fillEmail(String email) {
         emailInput.setValue(email);
         return this;
     }
 
+    @Step("Ввести пароль")
     public LoginPage fillPassword(String password) {
         passwordInput.setValue(password);
         return this;
     }
 
+    @Step("Отметить чекбокс «Remember me»")
     public LoginPage clickRememberMeCheckbox() {
         rememberMeCheckbox.click();
         return this;
     }
 
+    @Step("Нажать кнопку «Log in»")
     public <P> P clickLoginButton(Class<P> nextPage) {
         loginButton.click();
         return page(nextPage);
     }
 
+    @Step("Проверить ошибку валидации email")
     public LoginPage shouldShowEmailValidationError() {
         emailValidationErrorField.shouldHave(exactText(emailValidationErrorText));
         return this;
