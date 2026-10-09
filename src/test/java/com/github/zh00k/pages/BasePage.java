@@ -5,10 +5,9 @@ import com.github.zh00k.pages.components.Header;
 import com.github.zh00k.pages.components.HeaderMenu;
 import io.qameta.allure.Step;
 
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.webdriver;
 import static com.codeborne.selenide.WebDriverConditions.title;
 import static com.codeborne.selenide.WebDriverConditions.urlContaining;
-
 
 public abstract class BasePage<T extends BasePage<T>> {
     protected static final String TITLE_PREFIX = "Demo Web Shop. ";
@@ -49,12 +48,6 @@ public abstract class BasePage<T extends BasePage<T>> {
     public T shouldHaveCorrectTitle() {
         webdriver().shouldHave(title(pageTitle));
         return self();
-    }
-
-    @Step("Переключиться на окно {index}")
-    public <P> P switchToWindow(int index, Class<P> pageClass) {
-        switchTo().window(index);
-        return page(pageClass);
     }
 
     @SuppressWarnings("unchecked")

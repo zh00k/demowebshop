@@ -12,6 +12,7 @@ import static com.github.zh00k.config.Config.WEBSHOP_URL;
 public abstract class BaseTest {
     @BeforeAll
     protected static void beforeAll() {
+        Configuration.browserVersion = "153";
         Configuration.baseUrl = WEBSHOP_URL;
         SelenideLogger.addListener("AllureSelenide", new AllureSelenide());
     }

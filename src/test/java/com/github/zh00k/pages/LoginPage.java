@@ -8,10 +8,9 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;
 
 public class LoginPage extends BasePage<LoginPage> {
-    private final SelenideElement emailInput         = $("input#Email");
-    private final SelenideElement passwordInput      = $("input#Password");
-    private final SelenideElement rememberMeCheckbox = $("input#RememberMe");
-    private final SelenideElement loginButton        = $("input.login-button");
+    private final SelenideElement emailInput    = $("input#Email");
+    private final SelenideElement passwordInput = $("input#Password");
+    private final SelenideElement loginButton   = $("input.login-button");
 
     private final SelenideElement emailValidationErrorField = $("span.field-validation-error[data-valmsg-for='Email']");
 
@@ -30,12 +29,6 @@ public class LoginPage extends BasePage<LoginPage> {
     @Step("Ввести пароль")
     public LoginPage fillPassword(String password) {
         passwordInput.setValue(password);
-        return this;
-    }
-
-    @Step("Отметить чекбокс «Remember me»")
-    public LoginPage clickRememberMeCheckbox() {
-        rememberMeCheckbox.click();
         return this;
     }
 

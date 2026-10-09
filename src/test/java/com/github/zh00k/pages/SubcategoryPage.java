@@ -1,12 +1,12 @@
 package com.github.zh00k.pages;
 
 import com.codeborne.selenide.SelenideElement;
-
-import java.util.Objects;
 import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selenide.$;
+
+import java.util.Objects;
 
 public class SubcategoryPage extends BasePage<SubcategoryPage> {
 
