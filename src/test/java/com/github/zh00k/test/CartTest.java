@@ -51,14 +51,14 @@ public class CartTest extends BaseTest {
                 .headerMenu()
                 .openSubcategory("Computers", "Desktops", "desktops")
                 .openProduct(productName)
-                .shouldBeOpened()
-                .setItemQuantity(itemQuantity)
-                .selectProcessor(processor);
+                .shouldBeOpened();
 
         BigDecimal expectedUnitPrice = productPage.getItemPrice().add(processorSurcharge(processor));
         BigDecimal expectedSubtotal  = expectedUnitPrice.multiply(new BigDecimal(itemQuantity));
 
         CartPage cartPage = productPage
+                .setItemQuantity(itemQuantity)
+                .selectProcessor(processor)
                 .clickAddToCartButton()
                 .shouldShowAddedToCartNotification()
                 .header()
