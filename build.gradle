@@ -19,6 +19,7 @@ dependencies {
     testImplementation 'com.codeborne:selenide:7.18.2'
     testImplementation 'net.datafaker:datafaker:2.7.0'
     testImplementation "io.qameta.allure:allure-selenide:$allureVersion"
+    testImplementation 'org.aeonbits.owner:owner:1.0.12'
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
@@ -31,7 +32,7 @@ tasks.register('positiveTests', Test) {
     testClassesDirs = sourceSets.test.output.classesDirs
     classpath = sourceSets.test.runtimeClasspath
 
-    useJUnitPlatform {includeTags 'positive' }
+    useJUnitPlatform { includeTags 'positive' }
 }
 
 tasks.register('negativeTests', Test) {
@@ -39,6 +40,26 @@ tasks.register('negativeTests', Test) {
     classpath = sourceSets.test.runtimeClasspath
 
     useJUnitPlatform { includeTags 'negative' }
+}
+
+def cleanAllureResults = tasks.register('cleanAllureResults', Delete) {
+    delete layout.buildDirectory.dir('allure-results')
+}
+
+tasks.withType(Test).configureEach {
+    systemProperty 'run', System.getProperty('run', 'local')
+    systemProperty 'selenoidUser', System.getProperty('selenoidUser')
+    systemProperty 'selenoidPassword', System.getProperty('selenoidPassword')
+    dependsOn cleanAllureResults
+}
+
+def cleanCopyCategories = tasks.register('cleanCopyCategories', Delete) {
+    delete layout.buildDirectory.dir('copy-categories')
+}
+
+tasks.named('copyCategories') {
+    dependsOn cleanCopyCategories
+    mustRunAfter cleanAllureResults
 }
 
 allure {
