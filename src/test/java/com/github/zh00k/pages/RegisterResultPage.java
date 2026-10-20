@@ -7,9 +7,7 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
 public class RegisterResultPage extends BasePage<RegisterResultPage> {
-
-    private final SelenideElement continueButton = $("input.register-continue-button");
-    private final SelenideElement resultText     = $("div.result");
+    private final SelenideElement resultText = $("div.result");
 
     public RegisterResultPage() {
         super("/registerresult/", TITLE_PREFIX + "Register");
@@ -20,11 +18,5 @@ public class RegisterResultPage extends BasePage<RegisterResultPage> {
         resultText.shouldHave(text("Your registration completed"));
         header().shouldBeLoggedInAs(email);
         return this;
-    }
-
-    @Step("Нажать кнопку «Continue»")
-    public WelcomePage clickContinueButton() {
-        continueButton.click();
-        return new WelcomePage();
     }
 }

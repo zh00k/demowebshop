@@ -3,11 +3,7 @@ package com.github.zh00k.pages;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
-import java.math.BigDecimal;
-import io.qameta.allure.Step;
-
 import static com.codeborne.selenide.Condition.exactText;
-import static com.codeborne.selenide.Condition.exactValue;
 import static com.codeborne.selenide.Selenide.$$;
 
 public class CartPage extends BasePage<CartPage> {
@@ -18,12 +14,19 @@ public class CartPage extends BasePage<CartPage> {
         super("/cart", TITLE_PREFIX + "Shopping Cart");
     }
 
-    @Step("Проверить, что в корзине товар «{name}»: {quantity} шт. на сумму {subtotal}")
-    public CartPage shouldContainProduct(String name, int quantity, BigDecimal subtotal) {
-        SelenideElement row = productNames.findBy(exactText(name)).closest("tr");
+    public String getQuantity(String name) {
+        return row(name).$("input.qty-input").getValue();
+    }
 
-        row.$("input.qty-input").shouldHave(exactValue(String.valueOf(quantity)));
-        row.$("span.product-subtotal").shouldHave(exactText(subtotal.toPlainString()));
-        return this;
+    public String getUnitPrice(String name) {
+        return row(name).$("span.product-unit-price").getText();
+    }
+
+    public String getSubtotal(String name) {
+        return row(name).$("span.product-subtotal").getText();
+    }
+
+    private SelenideElement row(String name) {
+        return productNames.findBy(exactText(name)).closest("tr");
     }
 }
