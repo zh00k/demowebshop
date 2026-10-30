@@ -42,6 +42,40 @@ tasks.register('negativeTests', Test) {
     useJUnitPlatform { includeTags 'negative' }
 }
 
+tasks.register('uiTest', Test) {
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+
+    useJUnitPlatform {
+        def tag = System.getProperty("tag")
+
+        if (tag != null && !tag.isBlank()) {
+            includeTags("UI & ${tag}")
+        } else {
+            includeTags("UI")
+        }
+    }
+
+    systemProperties(System.getProperties())
+}
+
+tasks.register('apiTest', Test) {
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+
+    useJUnitPlatform {
+        def tag = System.getProperty("tag")
+
+        if (tag != null && !tag.isBlank()) {
+            includeTags("API & ${tag}")
+        } else {
+            includeTags("API")
+        }
+    }
+
+    systemProperties(System.getProperties())
+}
+
 def cleanAllureResults = tasks.register('cleanAllureResults', Delete) {
     delete layout.buildDirectory.dir('allure-results')
 }
@@ -51,6 +85,11 @@ tasks.withType(Test).configureEach {
     systemProperty 'selenoidUser', System.getProperty('selenoidUser')
     systemProperty 'selenoidPassword', System.getProperty('selenoidPassword')
     dependsOn cleanAllureResults
+
+    testLogging {
+        showStandardStreams = true
+        events "passed", "skipped", "failed"
+    }
 }
 
 def cleanCopyCategories = tasks.register('cleanCopyCategories', Delete) {
