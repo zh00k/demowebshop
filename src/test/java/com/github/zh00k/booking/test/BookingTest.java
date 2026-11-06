@@ -3,52 +3,121 @@ package com.github.zh00k.booking.test;
 import com.github.zh00k.booking.dto.Booking;
 import com.github.zh00k.booking.dto.BookingDates;
 import com.github.zh00k.booking.dto.BookingResponse;
-import io.qameta.allure.restassured.AllureRestAssured;
-import io.restassured.RestAssured;
-import io.restassured.filter.log.RequestLoggingFilter;
-import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.BeforeAll;
+import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Named.named;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-public class BookingTest {
+import java.util.stream.Stream;
+
+public class BookingTest extends BaseApiTest {
     private static final String BOOKING_URL = "https://restful-booker.herokuapp.com/booking";
 
-    @BeforeAll
-    static void setUp() {
-        RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
-        RestAssured.filters(new AllureRestAssured());
-    }
-
-    @Test
-    @Tags({@Tag("API"), @Tag("Positive"), @Tag("Booking")})
-    void successfulBookingTest() {
-        Booking bookingBody = Booking.builder()
+    private static Booking.BookingBuilder validBooking() {
+        return Booking.builder()
             .firstname("Barak")
             .lastname("Obama")
             .totalprice(666)
             .depositpaid(false)
             .bookingdates(new BookingDates("2027-01-01", "2028-01-01"))
-            .additionalneeds("toilet paper")
-            .build();
+            .additionalneeds("toilet paper");
+    }
 
-        BookingResponse res = given()
+    static Stream<Arguments> missingRequiredFields() {
+        return Stream.of(
+            arguments(named("missing firstname", validBooking().firstname(null).build())),
+            arguments(named("missing lastname", validBooking().lastname(null).build())),
+            arguments(named("missing totalprice", validBooking().totalprice(null).build())),
+            arguments(named("missing depositpaid", validBooking().depositpaid(null).build())),
+            arguments(named("missing bookingdates", validBooking().bookingdates(null).build())),
+            arguments(named("empty body", Booking.builder().build()))
+        );
+    }
+
+    private ValidatableResponse createBooking(Object body) {
+        return given()
             .contentType(ContentType.JSON)
-            .body(bookingBody)
+            .body(body)
             .when().post(BOOKING_URL)
-            .then().statusCode(200)
+            .then();
+    }
+
+    @Test
+    @Tags({@Tag("API"), @Tag("Positive"), @Tag("Booking")})
+    void validBookingReturnsCreatedBooking() {
+        Booking booking = validBooking().build();
+
+        BookingResponse res = createBooking(booking)
+            .statusCode(200)
             .extract().as(BookingResponse.class);
 
         assertThat(res.getBookingid()).isNotNull();
-        assertThat(res.getBooking().getTotalprice()).isEqualTo(666);
-        assertThat(res.getBooking().getBookingdates().getCheckin()).isEqualTo("2027-01-01");
-        assertThat(res.getBooking().getBookingdates().getCheckout()).isEqualTo("2028-01-01");
-        assertThat(res.getBooking().getDepositpaid()).isFalse();
+        assertThat(res.getBooking()).isEqualTo(booking);
+    }
 
+    // API возвращает 500, а не 400, если нет обязательного поля
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("missingRequiredFields")
+    @Tags({@Tag("API"), @Tag("Negative"), @Tag("Booking")})
+    void missingRequiredFieldReturnsError(Booking booking) {
+        createBooking(booking).statusCode(500);
+    }
+
+    @Test
+    @Tags({@Tag("API"), @Tag("Negative"), @Tag("Booking")})
+    void negativePriceReturnsCreatedBooking() {
+        Booking booking = validBooking().totalprice(-9999).build();
+
+        BookingResponse res = createBooking(booking)
+            .statusCode(200)
+            .extract().as(BookingResponse.class);
+
+        assertThat(res.getBookingid()).isNotNull();
+        assertThat(res.getBooking()).isEqualTo(booking);
+    }
+
+    // API сохраняет невалидные даты как "0NaN-aN-aN"
+    @ParameterizedTest(name = "{0}")
+    @CsvSource({
+        "invalid checkin date, not-a-date, 2028-01-01, 0NaN-aN-aN, 2028-01-01",
+        "invalid checkout date, 2027-01-01, not-a-date, 2027-01-01, 0NaN-aN-aN",
+        "invalid checkin and checkout dates, not-a-date, not-a-date, 0NaN-aN-aN, 0NaN-aN-aN",
+        "checkin after checkout, 2028-01-01, 2027-01-01, 2028-01-01, 2027-01-01",
+        "nonexistent checkin year, 9999-13-01, 2028-01-01, 0NaN-aN-aN, 2028-01-01",
+        "nonexistent checkin month, 2027-13-01, 2028-01-01, 0NaN-aN-aN, 2028-01-01",
+        "nonexistent checkin day, 2027-12-32, 2028-01-01, 0NaN-aN-aN, 2028-01-01",
+        // У checkout года по какой-то причине нет валидации...
+        "nonexistent checkout year, 9999-01-01, 2028-01-01, 9999-01-01, 2028-01-01",
+        "nonexistent checkout month, 2027-01-01, 2028-33-01, 2027-01-01, 0NaN-aN-aN",
+        "nonexistent checkout day, 2027-01-01, 2028-01-89, 2027-01-01, 0NaN-aN-aN"
+    })
+    @Tags({@Tag("API"), @Tag("Negative"), @Tag("Booking")})
+    void invalidDatesReturnCreatedBooking(
+        String caseName, String checkin, String checkout, String expectedCheckin, String expectedCheckout
+    ) {
+        Booking booking = validBooking()
+            .bookingdates(new BookingDates(checkin, checkout))
+            .build();
+
+        BookingResponse res = createBooking(booking)
+            .statusCode(200)
+            .extract().as(BookingResponse.class);
+
+        Booking expected = validBooking()
+            .bookingdates(new BookingDates(expectedCheckin, expectedCheckout))
+            .build();
+
+        assertThat(res.getBookingid()).isNotNull();
+        assertThat(res.getBooking()).isEqualTo(expected);
     }
 }
