@@ -1,8 +1,8 @@
-package com.github.zh00k.steps;
+package com.github.zh00k.demowebshop.steps;
 
-import com.github.zh00k.data.DataGenerator;
-import com.github.zh00k.data.User;
-import com.github.zh00k.pages.RegistrationPage;
+import com.github.zh00k.demowebshop.data.DataGenerator;
+import com.github.zh00k.demowebshop.data.User;
+import com.github.zh00k.demowebshop.pages.RegistrationPage;
 import io.qameta.allure.Step;
 
 public class UserSteps {

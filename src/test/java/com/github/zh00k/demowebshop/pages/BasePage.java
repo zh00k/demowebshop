@@ -1,8 +1,8 @@
-package com.github.zh00k.pages;
+package com.github.zh00k.demowebshop.pages;
 
 import com.codeborne.selenide.Selenide;
-import com.github.zh00k.pages.components.Header;
-import com.github.zh00k.pages.components.HeaderMenu;
+import com.github.zh00k.demowebshop.pages.components.Header;
+import com.github.zh00k.demowebshop.pages.components.HeaderMenu;
 import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Selenide.webdriver;

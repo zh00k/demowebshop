@@ -1,4 +1,4 @@
-package com.github.zh00k.data;
+package com.github.zh00k.demowebshop.data;
 
 public record User(
         Gender gender,
@@ -6,4 +6,5 @@ public record User(
         String lastName,
         String email,
         String password
-) { }
+) {
+}

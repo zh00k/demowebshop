@@ -1,9 +1,9 @@
-package com.github.zh00k.test;
+package com.github.zh00k.demowebshop.test;
 
-import com.github.zh00k.pages.CartPage;
-import com.github.zh00k.pages.ProductPage;
-import com.github.zh00k.pages.WelcomePage;
-import com.github.zh00k.steps.UserSteps;
+import com.github.zh00k.demowebshop.pages.CartPage;
+import com.github.zh00k.demowebshop.pages.ProductPage;
+import com.github.zh00k.demowebshop.pages.WelcomePage;
+import com.github.zh00k.demowebshop.steps.UserSteps;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Link;
@@ -17,8 +17,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 
-import static com.github.zh00k.config.Config.KAITEN_ALLURE_URL;
-import static com.github.zh00k.config.Config.KAITEN_ARCHITECTURE_URL;
+import static com.github.zh00k.demowebshop.config.Config.KAITEN_ALLURE_URL;
+import static com.github.zh00k.demowebshop.config.Config.KAITEN_ARCHITECTURE_URL;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

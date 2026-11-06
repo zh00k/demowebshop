@@ -1,4 +1,4 @@
-package com.github.zh00k.pages;
+package com.github.zh00k.demowebshop.pages;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;

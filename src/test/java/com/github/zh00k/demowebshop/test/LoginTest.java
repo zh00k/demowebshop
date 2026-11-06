@@ -1,9 +1,9 @@
-package com.github.zh00k.test;
+package com.github.zh00k.demowebshop.test;
 
-import com.github.zh00k.data.User;
-import com.github.zh00k.pages.LoginPage;
-import com.github.zh00k.pages.WelcomePage;
-import com.github.zh00k.steps.UserSteps;
+import com.github.zh00k.demowebshop.data.User;
+import com.github.zh00k.demowebshop.pages.LoginPage;
+import com.github.zh00k.demowebshop.pages.WelcomePage;
+import com.github.zh00k.demowebshop.steps.UserSteps;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Link;
@@ -18,9 +18,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.github.zh00k.config.Config.KAITEN_ALLURE_URL;
-import static com.github.zh00k.config.Config.KAITEN_JAVA_BASICS_URL;
-import static com.github.zh00k.config.Config.KAITEN_JUNIT_URL;
+import static com.github.zh00k.demowebshop.config.Config.KAITEN_ALLURE_URL;
+import static com.github.zh00k.demowebshop.config.Config.KAITEN_JAVA_BASICS_URL;
+import static com.github.zh00k.demowebshop.config.Config.KAITEN_JUNIT_URL;
 
 @Epic("Demo Web Shop")
 @Feature("Авторизация")

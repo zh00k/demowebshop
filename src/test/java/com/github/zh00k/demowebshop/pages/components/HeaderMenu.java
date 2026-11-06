@@ -1,7 +1,7 @@
-package com.github.zh00k.pages.components;
+package com.github.zh00k.demowebshop.pages.components;
 
 import com.codeborne.selenide.SelenideElement;
-import com.github.zh00k.pages.SubcategoryPage;
+import com.github.zh00k.demowebshop.pages.SubcategoryPage;
 import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Condition.exactText;

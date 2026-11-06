@@ -1,4 +1,4 @@
-package com.github.zh00k.util;
+package com.github.zh00k.demowebshop.util;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;

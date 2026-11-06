@@ -1,4 +1,4 @@
-package com.github.zh00k.config;
+package com.github.zh00k.demowebshop.config;
 
 import org.aeonbits.owner.Config;
 

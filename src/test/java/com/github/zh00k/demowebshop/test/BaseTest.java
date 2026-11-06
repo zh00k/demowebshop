@@ -1,17 +1,17 @@
-package com.github.zh00k.test;
+package com.github.zh00k.demowebshop.test;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.logevents.SelenideLogger;
-import com.github.zh00k.util.AttachmentManager;
+import com.github.zh00k.demowebshop.util.AttachmentManager;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 
 import static com.codeborne.selenide.Selenide.closeWebDriver;
-import static com.github.zh00k.config.Config.WEBSHOP_URL;
-import static com.github.zh00k.config.Config.setBrowserOptions;
+import static com.github.zh00k.demowebshop.config.Config.WEBSHOP_URL;
+import static com.github.zh00k.demowebshop.config.Config.setBrowserOptions;
 
 
 public abstract class BaseTest {

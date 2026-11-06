@@ -1,4 +1,4 @@
-package com.github.zh00k.data;
+package com.github.zh00k.demowebshop.data;
 
 import net.datafaker.Faker;
 
@@ -7,7 +7,8 @@ import java.util.Locale;
 public final class DataGenerator {
     private static final Faker faker = new Faker(Locale.ENGLISH);
 
-    private DataGenerator() {}
+    private DataGenerator() {
+    }
 
     public static String firstName() {
         return faker.name().firstName();

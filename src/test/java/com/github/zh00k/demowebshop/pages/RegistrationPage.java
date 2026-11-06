@@ -1,7 +1,7 @@
-package com.github.zh00k.pages;
+package com.github.zh00k.demowebshop.pages;
 
 import com.codeborne.selenide.SelenideElement;
-import com.github.zh00k.data.Gender;
+import com.github.zh00k.demowebshop.data.Gender;
 import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Selenide.$;
