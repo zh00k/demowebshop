@@ -14,6 +14,7 @@ import io.qameta.allure.Story;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 
 import static com.github.zh00k.config.Config.KAITEN_ALLURE_URL;
@@ -34,7 +35,7 @@ public class CartTest extends BaseTest {
 
     @Test
     @DisplayName("Добавление нескольких единиц товара в корзину авторизованным пользователем")
-    @Tag("positive")
+    @Tags({@Tag("UI"), @Tag("Positive")})
     @Owner("zh00k")
     @Link(name = "Архитектура тестов", url = KAITEN_ARCHITECTURE_URL)
     @Link(name = "Allure", url = KAITEN_ALLURE_URL)

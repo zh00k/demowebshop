@@ -12,6 +12,7 @@ import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 
 import static com.github.zh00k.config.Config.KAITEN_ALLURE_URL;
@@ -24,7 +25,7 @@ public class RegistrationTest extends BaseTest {
 
     @Test
     @DisplayName("Регистрация нового пользователя со всеми заполненными полями")
-    @Tag("positive")
+    @Tags({@Tag("UI"), @Tag("Positive")})
     @Owner("zh00k")
     @Link(name = "Основы Java", url = KAITEN_JAVA_BASICS_URL)
     @Link(name = "Allure", url = KAITEN_ALLURE_URL)

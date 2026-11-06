@@ -13,6 +13,7 @@ import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -30,7 +31,7 @@ public class LoginTest extends BaseTest {
 
     @Test
     @DisplayName("Вход зарегистрированного пользователя по email и паролю")
-    @Tag("positive")
+    @Tags({@Tag("UI"), @Tag("Positive")})
     @Owner("zh00k")
     @Link(name = "Основы Java", url = KAITEN_JAVA_BASICS_URL)
     @Link(name = "Allure", url = KAITEN_ALLURE_URL)
@@ -53,7 +54,7 @@ public class LoginTest extends BaseTest {
 
     @ParameterizedTest(name = "Невалидный email: {0}")
     @ValueSource(strings = {"plainaddress", "user@", "@mail.ru", "user@mail", "user@@email.ru"})
-    @Tag("negative")
+    @Tags({@Tag("UI"), @Tag("Negative")})
     @DisplayName("Ошибка валидации при невалидном email")
     @Owner("zh00k")
     @Link(name = "JUnit-аннотации", url = KAITEN_JUNIT_URL)
