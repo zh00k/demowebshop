@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BookingTest {
     private static final String BOOKING_URL = "https://restful-booker.herokuapp.com/booking";
@@ -42,5 +43,12 @@ public class BookingTest {
             .when().post(BOOKING_URL)
             .then().statusCode(200)
             .extract().as(BookingResponse.class);
+
+        assertThat(res.getBookingid()).isNotNull();
+        assertThat(res.getBooking().getTotalprice()).isEqualTo(666);
+        assertThat(res.getBooking().getBookingdates().getCheckin()).isEqualTo("2027-01-01");
+        assertThat(res.getBooking().getBookingdates().getCheckout()).isEqualTo("2028-01-01");
+        assertThat(res.getBooking().getDepositpaid()).isFalse();
+
     }
 }

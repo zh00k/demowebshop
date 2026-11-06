@@ -24,6 +24,7 @@ dependencies {
     testImplementation "io.qameta.allure:allure-rest-assured:$allureVersion"
     testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.22.4'
     testImplementation 'org.assertj:assertj-core:3.27.7'
+    testImplementation "io.qameta.allure:allure-assertj:$allureVersion"
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testRuntimeOnly 'org.slf4j:slf4j-nop:2.0.20'
