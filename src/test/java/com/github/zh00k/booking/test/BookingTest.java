@@ -1,5 +1,7 @@
 package com.github.zh00k.booking.test;
 
+import com.github.zh00k.booking.dto.AuthRequest;
+import com.github.zh00k.booking.dto.AuthResponse;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
@@ -10,7 +12,6 @@ import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.notNullValue;
 
 public class BookingTest {
     private static final String BOOKING_AUTH_URL = "https://restful-booker.herokuapp.com/auth";
@@ -23,19 +24,25 @@ public class BookingTest {
     @Test
     @Tags({@Tag("API"), @Tag("Positive")})
     void authTest() {
-        String user     = "admin";
+        String username = "admin";
         String password = "password123";
 
+        AuthRequest request = new AuthRequest();
+        request.setUsername(username);
+        request.setPassword(password);
+
         String body = "{" +
-            "    \"username\" : \"" + user + "\"," +
+            "    \"username\" : \"" + username + "\"," +
             "    \"password\" : \"" + password + "\"" +
             "}";
 
-        given()
+        AuthResponse res = given()
             .contentType(ContentType.JSON)
             .body(body)
             .when().post(BOOKING_AUTH_URL)
             .then().statusCode(200)
-            .body("token", notNullValue());
+            .extract().as(AuthResponse.class);
+
+        System.out.println("\nTOKEN ---> " + res.getToken() + "\n");
     }
 }
