@@ -23,10 +23,12 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured:6.3.0'
     testImplementation "io.qameta.allure:allure-rest-assured:$allureVersion"
     testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.22.4'
+    testImplementation 'org.assertj:assertj-core:3.27.7'
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testRuntimeOnly 'org.slf4j:slf4j-nop:2.0.20'
 
+    // Lombok setup, from: https://projectlombok.org/setup/gradle
     compileOnly("org.projectlombok:lombok:1.18.48")
     annotationProcessor("org.projectlombok:lombok:1.18.48")
 

@@ -1,7 +1,9 @@
 package com.github.zh00k.booking.test;
 
-import com.github.zh00k.booking.dto.AuthRequest;
-import com.github.zh00k.booking.dto.AuthResponse;
+import com.github.zh00k.booking.dto.Booking;
+import com.github.zh00k.booking.dto.BookingDates;
+import com.github.zh00k.booking.dto.BookingResponse;
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
@@ -14,35 +16,31 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 
 public class BookingTest {
-    private static final String BOOKING_AUTH_URL = "https://restful-booker.herokuapp.com/auth";
+    private static final String BOOKING_URL = "https://restful-booker.herokuapp.com/booking";
 
     @BeforeAll
     static void setUp() {
         RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
+        RestAssured.filters(new AllureRestAssured());
     }
 
     @Test
-    @Tags({@Tag("API"), @Tag("Positive")})
-    void authTest() {
-        String username = "admin";
-        String password = "password123";
+    @Tags({@Tag("API"), @Tag("Positive"), @Tag("Booking")})
+    void successfulBookingTest() {
+        Booking bookingBody = Booking.builder()
+            .firstname("Barak")
+            .lastname("Obama")
+            .totalprice(666)
+            .depositpaid(false)
+            .bookingdates(new BookingDates("2027-01-01", "2028-01-01"))
+            .additionalneeds("toilet paper")
+            .build();
 
-        AuthRequest request = new AuthRequest();
-        request.setUsername(username);
-        request.setPassword(password);
-
-        String body = "{" +
-            "    \"username\" : \"" + username + "\"," +
-            "    \"password\" : \"" + password + "\"" +
-            "}";
-
-        AuthResponse res = given()
+        BookingResponse res = given()
             .contentType(ContentType.JSON)
-            .body(body)
-            .when().post(BOOKING_AUTH_URL)
+            .body(bookingBody)
+            .when().post(BOOKING_URL)
             .then().statusCode(200)
-            .extract().as(AuthResponse.class);
-
-        System.out.println("\nTOKEN ---> " + res.getToken() + "\n");
+            .extract().as(BookingResponse.class);
     }
 }
