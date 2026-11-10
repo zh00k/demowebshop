@@ -43,3 +43,5 @@ bin/
 ### Misc ###
 allure-results
 .claude
+AGENTS.md
+/src/test/resources/config/booking.properties

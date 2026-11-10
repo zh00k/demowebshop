@@ -1,10 +1,13 @@
 package com.github.zh00k.booking.test;
 
+import com.github.zh00k.booking.clients.BookingApiClient;
 import com.github.zh00k.booking.dto.Booking;
 import com.github.zh00k.booking.dto.BookingDates;
 import com.github.zh00k.booking.dto.BookingResponse;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
+import net.datafaker.Faker;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
@@ -21,16 +24,18 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import java.util.stream.Stream;
 
 public class BookingTest extends BaseApiTest {
-    private static final String BOOKING_URL = "https://restful-booker.herokuapp.com/booking";
+    private static final String           BOOKING_URL      = "https://restful-booker.herokuapp.com/booking";
+    private static final Faker            faker            = new Faker();
+    private final        BookingApiClient bookingApiClient = new BookingApiClient();
 
     private static Booking.BookingBuilder validBooking() {
         return Booking.builder()
-            .firstname("Barak")
-            .lastname("Obama")
-            .totalprice(666)
-            .depositpaid(false)
+            .firstname(faker.name().firstName())
+            .lastname(faker.name().lastName())
+            .totalprice(faker.number().numberBetween(1, 1000))
+            .depositpaid(faker.bool().bool())
             .bookingdates(new BookingDates("2027-01-01", "2028-01-01"))
-            .additionalneeds("toilet paper");
+            .additionalneeds(faker.lorem().sentence());
     }
 
     static Stream<Arguments> missingRequiredFields() {
@@ -113,11 +118,34 @@ public class BookingTest extends BaseApiTest {
             .statusCode(200)
             .extract().as(BookingResponse.class);
 
-        Booking expected = validBooking()
+        Booking expected = Booking.builder()
+            .firstname(booking.getFirstname())
+            .lastname(booking.getLastname())
+            .totalprice(booking.getTotalprice())
+            .depositpaid(booking.getDepositpaid())
             .bookingdates(new BookingDates(expectedCheckin, expectedCheckout))
+            .additionalneeds(booking.getAdditionalneeds())
             .build();
 
         assertThat(res.getBookingid()).isNotNull();
         assertThat(res.getBooking()).isEqualTo(expected);
+    }
+
+    @Test
+    @Tags({@Tag("API"), @Tag("Positive"), @Tag("Booking")})
+    void validBookingUpdateReturnsUpdatedBooking() {
+        BookingResponse booking = bookingApiClient
+            .createBooking(validBooking().build())
+            .as(BookingResponse.class);
+
+        Booking newBookingData = validBooking().build();
+
+        Response updatedBooking = bookingApiClient.updateBooking(
+            booking.getBookingid(),
+            newBookingData
+        );
+
+        assertThat(updatedBooking.getStatusCode()).isEqualTo(200);
+        assertThat(updatedBooking.as(Booking.class)).isEqualTo(newBookingData);
     }
 }
