@@ -49,4 +49,42 @@ public class BookingApiClient {
             .extract()
             .response();
     }
+
+    public Response getBooking(int bookingId) {
+        return given()
+            .baseUri(cfg.bookingUrl())
+            .contentType(ContentType.JSON)
+            .pathParam("id", bookingId)
+            .when()
+            .get("/booking/{id}")
+            .then()
+            .extract()
+            .response();
+    }
+
+    public Response partiallyUpdateBooking(int bookingId, Booking booking) {
+        return given()
+            .baseUri(cfg.bookingUrl())
+            .cookie("token", getToken())
+            .contentType(ContentType.JSON)
+            .body(booking)
+            .pathParam("bookingId", bookingId)
+            .when()
+            .patch("/booking/{bookingId}")
+            .then()
+            .extract()
+            .response();
+    }
+
+    public Response deleteBooking(int bookingId) {
+        return given()
+            .baseUri(cfg.bookingUrl())
+            .cookie("token", getToken())
+            .contentType(ContentType.JSON)
+            .pathParam("bookingId", bookingId)
+            .delete("/booking/{bookingId}")
+            .then()
+            .extract()
+            .response();
+    }
 }
