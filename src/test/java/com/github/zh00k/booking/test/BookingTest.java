@@ -3,6 +3,7 @@ package com.github.zh00k.booking.test;
 import com.github.zh00k.booking.clients.BookingApiClient;
 import com.github.zh00k.booking.config.BookingApiConfig;
 import com.github.zh00k.booking.config.BookingConfig;
+import com.github.zh00k.booking.dto.AuthResponse;
 import com.github.zh00k.booking.dto.Booking;
 import com.github.zh00k.booking.dto.BookingDates;
 import com.github.zh00k.booking.dto.BookingResponse;
@@ -86,7 +87,8 @@ public class BookingTest extends BaseApiTest {
     @MethodSource("missingRequiredFields")
     @Tags({@Tag("API"), @Tag("negative"), @Tag("Booking")})
     void missingRequiredFieldReturnsError(Booking booking) {
-        createBooking(booking).statusCode(500);
+        Response response = createBooking(booking).extract().response();
+        assertThat(response.getStatusCode()).as("Invalid booking response status").isEqualTo(500);
     }
 
     @Test
@@ -99,7 +101,7 @@ public class BookingTest extends BaseApiTest {
             .extract().as(BookingResponse.class);
 
         assertThat(res.getBookingid()).isNotNull();
-        assertThat(res.getBooking()).isEqualTo(booking);
+        bookingSteps.verifyBookingEquals(booking, res.getBooking());
     }
 
     // API сохраняет невалидные даты как "0NaN-aN-aN"
@@ -109,11 +111,10 @@ public class BookingTest extends BaseApiTest {
         "invalid checkout date, 2027-01-01, not-a-date, 2027-01-01, 0NaN-aN-aN",
         "invalid checkin and checkout dates, not-a-date, not-a-date, 0NaN-aN-aN, 0NaN-aN-aN",
         "checkin after checkout, 2028-01-01, 2027-01-01, 2028-01-01, 2027-01-01",
-        "nonexistent checkin year, 9999-13-01, 2028-01-01, 0NaN-aN-aN, 2028-01-01",
+        "far-future checkin, 9999-01-01, 2028-01-01, 9999-01-01, 2028-01-01",
         "nonexistent checkin month, 2027-13-01, 2028-01-01, 0NaN-aN-aN, 2028-01-01",
         "nonexistent checkin day, 2027-12-32, 2028-01-01, 0NaN-aN-aN, 2028-01-01",
-        // У checkout года по какой-то причине нет валидации...
-        "nonexistent checkout year, 9999-01-01, 2028-01-01, 9999-01-01, 2028-01-01",
+        "far-future checkout, 2027-01-01, 9999-01-01, 2027-01-01, 9999-01-01",
         "nonexistent checkout month, 2027-01-01, 2028-33-01, 2027-01-01, 0NaN-aN-aN",
         "nonexistent checkout day, 2027-01-01, 2028-01-89, 2027-01-01, 0NaN-aN-aN"
     })
@@ -139,20 +140,31 @@ public class BookingTest extends BaseApiTest {
             .build();
 
         assertThat(res.getBookingid()).isNotNull();
-        assertThat(res.getBooking()).isEqualTo(expected);
+        bookingSteps.verifyBookingEquals(expected, res.getBooking());
     }
 
     @Test
     @Tags({@Tag("API"), @Tag("positive"), @Tag("Booking")})
     void validBookingUpdateReturnsUpdatedBooking() {
-        BookingResponse booking        = bookingApiClient.createBooking(validBooking().build()).as(BookingResponse.class);
-        Booking         newBookingData = validBooking().build();
-        Response        updatedBooking = bookingApiClient.updateBooking(booking.getBookingid(), newBookingData);
+        Response createdBooking = bookingApiClient.createBooking(validBooking().build());
+        assertThat(createdBooking.getStatusCode()).as("Booking creation status").isEqualTo(200);
 
-        assertThat(updatedBooking.getStatusCode()).isEqualTo(200);
+        Integer bookingId = createdBooking.as(BookingResponse.class).getBookingid();
+        assertThat(bookingId).as("Created booking ID").isPositive();
 
-        Response fetchedBooking = bookingApiClient.getBooking(booking.getBookingid());
-        assertThat(fetchedBooking.getStatusCode()).isEqualTo(200);
+        Response authResponse = bookingApiClient.authenticate();
+        assertThat(authResponse.getStatusCode()).as("Authentication status").isEqualTo(200);
+        String token = authResponse.as(AuthResponse.class).getToken();
+        assertThat(token).as("Authentication token").isNotBlank();
+
+        Booking  newBookingData = validBooking().build();
+        Response updatedBooking = bookingApiClient.updateBooking(bookingId, newBookingData, token);
+
+        assertThat(updatedBooking.getStatusCode()).as("Booking update status").isEqualTo(200);
+        bookingSteps.verifyBookingEquals(newBookingData, updatedBooking.as(Booking.class));
+
+        Response fetchedBooking = bookingApiClient.getBooking(bookingId);
+        assertThat(fetchedBooking.getStatusCode()).as("Fetched booking status").isEqualTo(200);
         bookingSteps.verifyBookingEquals(newBookingData, fetchedBooking.as(Booking.class));
     }
 
@@ -164,13 +176,18 @@ public class BookingTest extends BaseApiTest {
         assertThat(createdBooking.getStatusCode()).isEqualTo(200);
         int bookingId = createdBooking.as(BookingResponse.class).getBookingid();
 
+        Response authResponse = bookingApiClient.authenticate();
+        assertThat(authResponse.getStatusCode()).as("Authentication status").isEqualTo(200);
+        String token = authResponse.as(AuthResponse.class).getToken();
+        assertThat(token).as("Authentication token").isNotBlank();
+
         Booking partialUpdate = Booking.builder()
             .firstname("Barak")
             .lastname("Obama")
             .additionalneeds("Guy Fawkes mask")
             .build();
 
-        Response updatedBooking = bookingApiClient.partiallyUpdateBooking(bookingId, partialUpdate);
+        Response updatedBooking = bookingApiClient.partiallyUpdateBooking(bookingId, partialUpdate, token);
 
         assertThat(updatedBooking.getStatusCode()).isEqualTo(200);
 

@@ -29,9 +29,11 @@ public class AuthTest extends BaseApiTest {
         return Stream.of(
             arguments("wrong password", new AuthRequest(cfg.username(), "some-password"), BAD_CREDENTIALS),
             arguments("wrong username", new AuthRequest("lololoshka", cfg.password()), BAD_CREDENTIALS),
+            arguments("empty password", new AuthRequest(cfg.username(), ""), BAD_CREDENTIALS),
+            arguments("empty username", new AuthRequest("", cfg.password()), BAD_CREDENTIALS),
             arguments("null password", new AuthRequest(cfg.username(), null), BAD_CREDENTIALS),
             arguments("null username", new AuthRequest(null, cfg.password()), BAD_CREDENTIALS),
-            arguments("empty body", "{}", BAD_CREDENTIALS)
+            arguments("empty body", new AuthRequest(), BAD_CREDENTIALS)
         );
     }
 
@@ -52,7 +54,7 @@ public class AuthTest extends BaseApiTest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("invalidAuthRequests")
     @Tags({@Tag("API"), @Tag("negative"), @Tag("Authorization")})
-    void invalidAuthRequestReturnsReason(String caseName, Object body, String expectedReason) {
+    void invalidAuthRequestReturnsReason(String caseName, AuthRequest body, String expectedReason) {
         AuthResponse res = given()
             .baseUri(BOOKING_BASE_URL)
             .contentType(ContentType.JSON)

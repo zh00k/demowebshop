@@ -13,6 +13,18 @@ import static io.restassured.RestAssured.given;
 public class BookingApiClient {
     private static final BookingConfig cfg = BookingApiConfig.getBookingConfig();
 
+    public Response authenticate() {
+        return given()
+            .baseUri(cfg.bookingUrl())
+            .contentType(ContentType.JSON)
+            .body(new AuthRequest(cfg.username(), cfg.password()))
+            .when()
+            .post("/auth")
+            .then()
+            .extract()
+            .response();
+    }
+
     public String getToken() {
         return given()
             .baseUri(cfg.bookingUrl())
@@ -36,11 +48,11 @@ public class BookingApiClient {
             .response();
     }
 
-    public Response updateBooking(int bookingId, Booking booking) {
+    public Response updateBooking(int bookingId, Booking booking, String token) {
         return given()
             .baseUri(cfg.bookingUrl())
             .contentType(ContentType.JSON)
-            .cookie("token", getToken())
+            .cookie("token", token)
             .body(booking)
             .pathParam("bookingId", bookingId)
             .when()
@@ -62,10 +74,10 @@ public class BookingApiClient {
             .response();
     }
 
-    public Response partiallyUpdateBooking(int bookingId, Booking booking) {
+    public Response partiallyUpdateBooking(int bookingId, Booking booking, String token) {
         return given()
             .baseUri(cfg.bookingUrl())
-            .cookie("token", getToken())
+            .cookie("token", token)
             .contentType(ContentType.JSON)
             .body(booking)
             .pathParam("bookingId", bookingId)
