@@ -1,9 +1,12 @@
 package com.github.zh00k.booking.test;
 
 import com.github.zh00k.booking.clients.BookingApiClient;
+import com.github.zh00k.booking.config.BookingApiConfig;
+import com.github.zh00k.booking.config.BookingConfig;
 import com.github.zh00k.booking.dto.Booking;
 import com.github.zh00k.booking.dto.BookingDates;
 import com.github.zh00k.booking.dto.BookingResponse;
+import com.github.zh00k.booking.steps.BookingSteps;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
@@ -24,9 +27,10 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import java.util.stream.Stream;
 
 public class BookingTest extends BaseApiTest {
-    private static final String           BOOKING_URL      = "https://restful-booker.herokuapp.com/booking";
     private static final Faker            faker            = new Faker();
+    private static final BookingConfig    cfg              = BookingApiConfig.getBookingConfig();
     private final        BookingApiClient bookingApiClient = new BookingApiClient();
+    private final        BookingSteps     bookingSteps     = new BookingSteps();
 
     private static Booking.BookingBuilder validBooking() {
         return Booking.builder()
@@ -51,14 +55,16 @@ public class BookingTest extends BaseApiTest {
 
     private ValidatableResponse createBooking(Object body) {
         return given()
+            .baseUri(cfg.bookingUrl())
+            .basePath("/booking")
             .contentType(ContentType.JSON)
             .body(body)
-            .when().post(BOOKING_URL)
+            .when().post()
             .then();
     }
 
     @Test
-    @Tags({@Tag("API"), @Tag("Positive"), @Tag("Booking")})
+    @Tags({@Tag("API"), @Tag("positive"), @Tag("Booking")})
     void validBookingReturnsCreatedBooking() {
         Booking booking = validBooking().build();
 
@@ -67,19 +73,19 @@ public class BookingTest extends BaseApiTest {
             .extract().as(BookingResponse.class);
 
         assertThat(res.getBookingid()).isNotNull();
-        assertThat(res.getBooking()).isEqualTo(booking);
+        bookingSteps.verifyBookingEquals(booking, res.getBooking());
     }
 
     // API возвращает 500, а не 400, если нет обязательного поля
     @ParameterizedTest(name = "{0}")
     @MethodSource("missingRequiredFields")
-    @Tags({@Tag("API"), @Tag("Negative"), @Tag("Booking")})
+    @Tags({@Tag("API"), @Tag("negative"), @Tag("Booking")})
     void missingRequiredFieldReturnsError(Booking booking) {
         createBooking(booking).statusCode(500);
     }
 
     @Test
-    @Tags({@Tag("API"), @Tag("Negative"), @Tag("Booking")})
+    @Tags({@Tag("API"), @Tag("negative"), @Tag("Booking")})
     void negativePriceReturnsCreatedBooking() {
         Booking booking = validBooking().totalprice(-9999).build();
 
@@ -106,7 +112,7 @@ public class BookingTest extends BaseApiTest {
         "nonexistent checkout month, 2027-01-01, 2028-33-01, 2027-01-01, 0NaN-aN-aN",
         "nonexistent checkout day, 2027-01-01, 2028-01-89, 2027-01-01, 0NaN-aN-aN"
     })
-    @Tags({@Tag("API"), @Tag("Negative"), @Tag("Booking")})
+    @Tags({@Tag("API"), @Tag("negative"), @Tag("Booking")})
     void invalidDatesReturnCreatedBooking(
         String caseName, String checkin, String checkout, String expectedCheckin, String expectedCheckout
     ) {
@@ -132,7 +138,7 @@ public class BookingTest extends BaseApiTest {
     }
 
     @Test
-    @Tags({@Tag("API"), @Tag("Positive"), @Tag("Booking")})
+    @Tags({@Tag("API"), @Tag("positive"), @Tag("Booking")})
     void validBookingUpdateReturnsUpdatedBooking() {
         BookingResponse booking = bookingApiClient
             .createBooking(validBooking().build())
@@ -146,6 +152,6 @@ public class BookingTest extends BaseApiTest {
         );
 
         assertThat(updatedBooking.getStatusCode()).isEqualTo(200);
-        assertThat(updatedBooking.as(Booking.class)).isEqualTo(newBookingData);
+        bookingSteps.verifyBookingEquals(newBookingData, updatedBooking.as(Booking.class));
     }
 }

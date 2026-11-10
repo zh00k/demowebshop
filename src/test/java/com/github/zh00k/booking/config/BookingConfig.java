@@ -10,4 +10,7 @@ public interface BookingConfig extends Config {
 
     @Key("password")
     String password();
+
+    @Key("bookingUrl")
+    String bookingUrl();
 }

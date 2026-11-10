@@ -11,12 +11,11 @@ import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
 
 public class BookingApiClient {
-    private static final BookingConfig cfg      = BookingApiConfig.getBookingConfig();
-    private static final String        BASE_URL = "https://restful-booker.herokuapp.com";
+    private static final BookingConfig cfg = BookingApiConfig.getBookingConfig();
 
     public String getToken() {
         return given()
-            .baseUri(BASE_URL)
+            .baseUri(cfg.bookingUrl())
             .contentType(ContentType.JSON)
             .body(new AuthRequest(cfg.username(), cfg.password()))
             .when().post("/auth")
@@ -27,7 +26,7 @@ public class BookingApiClient {
 
     public Response createBooking(Booking booking) {
         return given()
-            .baseUri(BASE_URL)
+            .baseUri(cfg.bookingUrl())
             .contentType(ContentType.JSON)
             .body(booking)
             .when()
@@ -39,7 +38,7 @@ public class BookingApiClient {
 
     public Response updateBooking(int bookingId, Booking booking) {
         return given()
-            .baseUri(BASE_URL)
+            .baseUri(cfg.bookingUrl())
             .contentType(ContentType.JSON)
             .cookie("token", getToken())
             .body(booking)
