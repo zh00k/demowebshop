@@ -1,5 +1,7 @@
 package com.github.zh00k.booking.test;
 
+import com.github.zh00k.booking.config.BookingApiConfig;
+import com.github.zh00k.booking.config.BookingConfig;
 import com.github.zh00k.booking.dto.AuthRequest;
 import com.github.zh00k.booking.dto.AuthResponse;
 import io.restassured.http.ContentType;
@@ -18,29 +20,31 @@ import java.util.stream.Stream;
 
 // API возвращает 200 даже при неверных данных
 public class AuthTest extends BaseApiTest {
-    private static final String BOOKING_AUTH_URL = "https://restful-booker.herokuapp.com/auth";
-    private static final String BAD_CREDENTIALS  = "Bad credentials";
-    private static final String USERNAME         = "admin";
-    private static final String PASSWORD         = "password123";
+    private static final BookingConfig cfg              = BookingApiConfig.getBookingConfig();
+    private static final String        BOOKING_BASE_URL = BookingApiConfig.getBookingConfig().bookingUrl();
+    private static final String        BAD_CREDENTIALS  = "Bad credentials";
 
     // Можно сделать через Record, но кода будет больше...
     static Stream<Arguments> invalidAuthRequests() {
         return Stream.of(
-            arguments("wrong password", new AuthRequest(USERNAME, "some-password"), BAD_CREDENTIALS),
-            arguments("wrong username", new AuthRequest("lololoshka", PASSWORD), BAD_CREDENTIALS),
-            arguments("null password", new AuthRequest(USERNAME, null), BAD_CREDENTIALS),
-            arguments("null username", new AuthRequest(null, PASSWORD), BAD_CREDENTIALS),
-            arguments("empty body", "{}", BAD_CREDENTIALS)
+            arguments("wrong password", new AuthRequest(cfg.username(), "some-password"), BAD_CREDENTIALS),
+            arguments("wrong username", new AuthRequest("lololoshka", cfg.password()), BAD_CREDENTIALS),
+            arguments("empty password", new AuthRequest(cfg.username(), ""), BAD_CREDENTIALS),
+            arguments("empty username", new AuthRequest("", cfg.password()), BAD_CREDENTIALS),
+            arguments("null password", new AuthRequest(cfg.username(), null), BAD_CREDENTIALS),
+            arguments("null username", new AuthRequest(null, cfg.password()), BAD_CREDENTIALS),
+            arguments("empty body", new AuthRequest(), BAD_CREDENTIALS)
         );
     }
 
     @Test
-    @Tags({@Tag("API"), @Tag("Positive"), @Tag("Authorization")})
+    @Tags({@Tag("API"), @Tag("positive"), @Tag("Authorization")})
     void validCredentialsReturnToken() {
         AuthResponse res = given()
+            .baseUri(BOOKING_BASE_URL)
             .contentType(ContentType.JSON)
-            .body(new AuthRequest(USERNAME, PASSWORD))
-            .when().post(BOOKING_AUTH_URL)
+            .body(new AuthRequest(cfg.username(), cfg.password()))
+            .when().post("/auth")
             .then().statusCode(200)
             .extract().as(AuthResponse.class);
 
@@ -49,12 +53,13 @@ public class AuthTest extends BaseApiTest {
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("invalidAuthRequests")
-    @Tags({@Tag("API"), @Tag("Negative"), @Tag("Authorization")})
-    void invalidAuthRequestReturnsReason(String caseName, Object body, String expectedReason) {
+    @Tags({@Tag("API"), @Tag("negative"), @Tag("Authorization")})
+    void invalidAuthRequestReturnsReason(String caseName, AuthRequest body, String expectedReason) {
         AuthResponse res = given()
+            .baseUri(BOOKING_BASE_URL)
             .contentType(ContentType.JSON)
             .body(body)
-            .when().post(BOOKING_AUTH_URL)
+            .when().post("/auth")
             .then().statusCode(200)
             .extract().as(AuthResponse.class);
 
@@ -63,11 +68,12 @@ public class AuthTest extends BaseApiTest {
     }
 
     @Test
-    @Tags({@Tag("API"), @Tag("Negative"), @Tag("Authorization")})
+    @Tags({@Tag("API"), @Tag("negative"), @Tag("Authorization")})
     void noBodyReturnsReason() {
         AuthResponse res = given()
+            .baseUri(BOOKING_BASE_URL)
             .contentType(ContentType.JSON)
-            .when().post(BOOKING_AUTH_URL)
+            .when().post("/auth")
             .then().statusCode(200)
             .extract().as(AuthResponse.class);
 
