@@ -23,7 +23,8 @@ public class ProductPage extends BasePage<ProductPage> {
     private final SelenideElement addToCartButton                     = $("input.add-to-cart-button");
     private final SelenideElement successfullyAddedToCartNotification = $("div#bar-notification.success");
     private final SelenideElement qtyInput                            = $("input.qty-input");
-    private final SelenideElement processorBlock                      = productAttributes.findBy(text("Processor")).sibling(0);
+    private final SelenideElement processorBlock                      = productAttributes.findBy(
+        text("Processor")).sibling(0);
 
     public ProductPage(String name) {
         super(null, TITLE_PREFIX + name);

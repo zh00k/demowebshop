@@ -41,15 +41,15 @@ public class LoginTest extends BaseTest {
         User user = userSteps.registerUser();
 
         welcomePage
-                .header()
-                .clickLogOut()
-                .shouldBeLoggedOut()
-                .clickLogin()
-                .fillEmail(user.email())
-                .fillPassword(user.password())
-                .clickLoginButton(WelcomePage.class)
-                .header()
-                .shouldBeLoggedInAs(user.email());
+            .header()
+            .clickLogOut()
+            .shouldBeLoggedOut()
+            .clickLogin()
+            .fillEmail(user.email())
+            .fillPassword(user.password())
+            .clickLoginButton(WelcomePage.class)
+            .header()
+            .shouldBeLoggedInAs(user.email());
     }
 
     @ParameterizedTest(name = "Невалидный email: {0}")
@@ -63,10 +63,10 @@ public class LoginTest extends BaseTest {
     @Story("Вход с невалидными данными")
     void invalidEmailLogin(String email) {
         loginPage
-                .open()
-                .fillEmail(email)
-                .fillPassword("1234")
-                .clickLoginButton(LoginPage.class)
-                .shouldShowEmailValidationError();
+            .open()
+            .fillEmail(email)
+            .fillPassword("1234")
+            .clickLoginButton(LoginPage.class)
+            .shouldShowEmailValidationError();
     }
 }

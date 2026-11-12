@@ -17,14 +17,14 @@ public class AttachmentManager {
     @Attachment(value = "Video", type = "text/html", fileExtension = ".html")
     public static String video(String sessionId) {
         return "<html><body><video width='100%' height='100%' controls autoplay muted>"
-                + "<source src='" + videoUrl(sessionId) + "' type='video/mp4'>"
-                + "</video></body></html>";
+            + "<source src='" + videoUrl(sessionId) + "' type='video/mp4'>"
+            + "</video></body></html>";
     }
 
     private static String videoUrl(String sessionId) {
         URI remote = URI.create(Configuration.remote);
         String host = remote.getScheme() + "://" + remote.getHost()
-                + (remote.getPort() == -1 ? "" : ":" + remote.getPort());
+            + (remote.getPort() == -1 ? "" : ":" + remote.getPort());
         return host + "/video/" + sessionId + ".mp4";
     }
 }

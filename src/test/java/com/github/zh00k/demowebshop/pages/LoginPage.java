@@ -12,7 +12,8 @@ public class LoginPage extends BasePage<LoginPage> {
     private final SelenideElement passwordInput = $("input#Password");
     private final SelenideElement loginButton   = $("input.login-button");
 
-    private final SelenideElement emailValidationErrorField = $("span.field-validation-error[data-valmsg-for='Email']");
+    private final SelenideElement emailValidationErrorField = $(
+        "span.field-validation-error[data-valmsg-for='Email']");
 
     private final String emailValidationErrorText = "Please enter a valid email address.";
 

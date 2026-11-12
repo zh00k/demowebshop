@@ -9,13 +9,15 @@ import java.util.Map;
 
 public class Config {
     public static final  String WEBSHOP_URL             = "https://demowebshop.tricentis.com";
-    private static final String KAITEN_CARDS            = "https://qafeelsgood.kaiten.ru/space/841545/lists/card/";
+    private static final String KAITEN_CARDS            = "https://qafeelsgood.kaiten" +
+        ".ru/space/841545/lists/card/";
     public static final  String KAITEN_JAVA_BASICS_URL  = KAITEN_CARDS + "71053253";
     public static final  String KAITEN_ARCHITECTURE_URL = KAITEN_CARDS + "71053254";
     public static final  String KAITEN_JUNIT_URL        = KAITEN_CARDS + "71053255";
     public static final  String KAITEN_ALLURE_URL       = KAITEN_CARDS + "71053252";
 
-    private static final WebDriverConfig CONFIG = ConfigFactory.create(WebDriverConfig.class, System.getProperties());
+    private static final WebDriverConfig CONFIG = ConfigFactory.create(WebDriverConfig.class,
+        System.getProperties());
 
     private static Map<String, Object> getSelenoidOptions() {
         Map<String, Object> selenoidOptions = new HashMap<>();
@@ -34,9 +36,9 @@ public class Config {
 
     private static void setRemoteChromeOptions() {
         Configuration.remote = "https://"
-                + CONFIG.selenoidUser() + ":"
-                + CONFIG.selenoidPassword() + "@"
-                + CONFIG.selenoidUrl() + "/wd/hub";
+            + CONFIG.selenoidUser() + ":"
+            + CONFIG.selenoidPassword() + "@"
+            + CONFIG.selenoidUrl() + "/wd/hub";
 
         ChromeOptions options = new ChromeOptions();
         options.setCapability("browserVersion", CONFIG.browserVersion());

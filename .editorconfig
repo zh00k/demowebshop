@@ -8,11 +8,23 @@ trim_trailing_whitespace = true
 indent_style = space
 indent_size = 4
 
-[*.java]
+[*.{java,kt,kts}]
 ij_continuation_indent_size = 4
+max_line_length = 110
+
+[*.java]
 ij_java_imports_layout = *, |, $*, |, java.**, javax.**
 ij_java_class_count_to_use_import_on_demand = 999
 ij_java_names_count_to_use_import_on_demand = 999
 ij_java_align_group_field_declarations = true
 ij_java_align_consecutive_variable_declarations = true
 ij_java_align_subsequent_simple_methods = true
+ij_java_wrap_long_lines = true
+ij_java_call_parameters_wrap = normal
+ij_java_method_parameters_wrap = normal
+ij_java_array_initializer_wrap = normal
+ij_java_method_call_chain_wrap = normal
+ij_java_keep_simple_classes_in_one_line = true
+
+[*.md]
+trim_trailing_whitespace = false

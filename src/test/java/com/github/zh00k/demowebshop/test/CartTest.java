@@ -48,30 +48,30 @@ public class CartTest extends BaseTest {
         int itemQuantity = 2;
 
         ProductPage productPage = new WelcomePage()
-                .open()
-                .headerMenu()
-                .openSubcategory("Computers", "Desktops", "desktops")
-                .openProduct(productName)
-                .shouldBeOpened();
+            .open()
+            .headerMenu()
+            .openSubcategory("Computers", "Desktops", "desktops")
+            .openProduct(productName)
+            .shouldBeOpened();
 
         BigDecimal expectedUnitPrice = productPage.getItemPrice().add(processorSurcharge(processor));
         BigDecimal expectedSubtotal  = expectedUnitPrice.multiply(new BigDecimal(itemQuantity));
 
         CartPage cartPage = productPage
-                .setItemQuantity(itemQuantity)
-                .selectProcessor(processor)
-                .clickAddToCartButton()
-                .shouldShowAddedToCartNotification()
-                .header()
-                .cartShouldHaveQuantity(itemQuantity)
-                .clickCart()
-                .shouldBeOpened()
-                .shouldHaveCorrectTitle();
+            .setItemQuantity(itemQuantity)
+            .selectProcessor(processor)
+            .clickAddToCartButton()
+            .shouldShowAddedToCartNotification()
+            .header()
+            .cartShouldHaveQuantity(itemQuantity)
+            .clickCart()
+            .shouldBeOpened()
+            .shouldHaveCorrectTitle();
 
         assertAll(
-                () -> assertEquals(String.valueOf(itemQuantity), cartPage.getQuantity(productName)),
-                () -> assertEquals(expectedUnitPrice.toPlainString(), cartPage.getUnitPrice(productName)),
-                () -> assertEquals(expectedSubtotal.toPlainString(), cartPage.getSubtotal(productName))
+            () -> assertEquals(String.valueOf(itemQuantity), cartPage.getQuantity(productName)),
+            () -> assertEquals(expectedUnitPrice.toPlainString(), cartPage.getUnitPrice(productName)),
+            () -> assertEquals(expectedSubtotal.toPlainString(), cartPage.getSubtotal(productName))
         );
     }
 

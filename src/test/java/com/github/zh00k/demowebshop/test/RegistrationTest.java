@@ -35,18 +35,18 @@ public class RegistrationTest extends BaseTest {
         User user = DataGenerator.randomUser();
 
         welcomePage
-                .open()
-                .shouldHaveCorrectTitle()
-                .header()
-                .clickRegister()
-                .shouldBeOpened()
-                .selectGender(user.gender())
-                .fillFirstName(user.firstName())
-                .fillLastName(user.lastName())
-                .fillEmail(user.email())
-                .fillPassword(user.password())
-                .fillConfirmPassword(user.password())
-                .clickRegister()
-                .shouldBeRegistered(user.email());
+            .open()
+            .shouldHaveCorrectTitle()
+            .header()
+            .clickRegister()
+            .shouldBeOpened()
+            .selectGender(user.gender())
+            .fillFirstName(user.firstName())
+            .fillLastName(user.lastName())
+            .fillEmail(user.email())
+            .fillPassword(user.password())
+            .fillConfirmPassword(user.password())
+            .clickRegister()
+            .shouldBeRegistered(user.email());
     }
 }

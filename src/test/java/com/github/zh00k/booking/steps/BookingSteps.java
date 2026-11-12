@@ -33,7 +33,8 @@ public class BookingSteps {
                 )
             ),
             () -> assertEquals(
-                expected.getAdditionalneeds(), actual.getAdditionalneeds(), "Booking additional needs should match"
+                expected.getAdditionalneeds(), actual.getAdditionalneeds(),
+                "Booking additional needs should match"
             )
         );
     }

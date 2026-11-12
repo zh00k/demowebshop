@@ -12,7 +12,8 @@ public class HeaderMenu {
 
     @Step("Открыть подкатегорию «{category} → {subcategory}»")
     public SubcategoryPage openSubcategory(String category, String subcategory, String path) {
-        SelenideElement categoryMenuElement = root.$$("ul.top-menu > li > a").findBy(exactText(category)).parent();
+        SelenideElement categoryMenuElement = root.$$("ul.top-menu > li > a").findBy(
+            exactText(category)).parent();
 
         categoryMenuElement.hover();
         categoryMenuElement.$$("ul.sublist > li > a").findBy(exactText(subcategory)).click();

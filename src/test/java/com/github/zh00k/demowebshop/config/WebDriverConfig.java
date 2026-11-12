@@ -3,8 +3,8 @@ package com.github.zh00k.demowebshop.config;
 import org.aeonbits.owner.Config;
 
 @Config.Sources({
-        "system:properties",
-        "classpath:config/${run}.properties"
+    "system:properties",
+    "classpath:config/${run}.properties"
 })
 
 @Config.LoadPolicy(Config.LoadType.MERGE)

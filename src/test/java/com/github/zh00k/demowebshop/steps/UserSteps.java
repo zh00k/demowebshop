@@ -13,15 +13,15 @@ public class UserSteps {
         User             user             = DataGenerator.randomUser();
 
         registrationPage
-                .open()
-                .selectGender(user.gender())
-                .fillFirstName(user.firstName())
-                .fillLastName(user.lastName())
-                .fillEmail(user.email())
-                .fillPassword(user.password())
-                .fillConfirmPassword(user.password())
-                .clickRegister()
-                .shouldBeRegistered(user.email());
+            .open()
+            .selectGender(user.gender())
+            .fillFirstName(user.firstName())
+            .fillLastName(user.lastName())
+            .fillEmail(user.email())
+            .fillPassword(user.password())
+            .fillConfirmPassword(user.password())
+            .clickRegister()
+            .shouldBeRegistered(user.email());
 
         return user;
     }
