@@ -5,17 +5,23 @@ import com.github.zh00k.booking.config.BookingConfig;
 import com.github.zh00k.booking.dto.AuthRequest;
 import com.github.zh00k.booking.dto.AuthResponse;
 import com.github.zh00k.booking.dto.Booking;
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
 import static io.restassured.RestAssured.given;
 
 public class BookingApiClient {
     private static final BookingConfig cfg = BookingApiConfig.getBookingConfig();
 
+    private final RequestSpecification spec = new RequestSpecBuilder()
+        .setBaseUri(cfg.bookingUrl())
+        .setContentType(ContentType.JSON)
+        .build();
+
     public Response authenticate() {
-        return given()
-            .baseUri(cfg.bookingUrl())
+        return given(spec)
             .contentType(ContentType.JSON)
             .body(new AuthRequest(cfg.username(), cfg.password()))
             .when()
@@ -26,9 +32,7 @@ public class BookingApiClient {
     }
 
     public String getToken() {
-        return given()
-            .baseUri(cfg.bookingUrl())
-            .contentType(ContentType.JSON)
+        return given(spec)
             .body(new AuthRequest(cfg.username(), cfg.password()))
             .when().post("/auth")
             .then()
@@ -37,9 +41,7 @@ public class BookingApiClient {
     }
 
     public Response createBooking(Booking booking) {
-        return given()
-            .baseUri(cfg.bookingUrl())
-            .contentType(ContentType.JSON)
+        return given(spec)
             .body(booking)
             .when()
             .post("/booking")
@@ -49,9 +51,7 @@ public class BookingApiClient {
     }
 
     public Response updateBooking(int bookingId, Booking booking, String token) {
-        return given()
-            .baseUri(cfg.bookingUrl())
-            .contentType(ContentType.JSON)
+        return given(spec)
             .cookie("token", token)
             .body(booking)
             .pathParam("bookingId", bookingId)
@@ -63,9 +63,7 @@ public class BookingApiClient {
     }
 
     public Response getBooking(int bookingId) {
-        return given()
-            .baseUri(cfg.bookingUrl())
-            .contentType(ContentType.JSON)
+        return given(spec)
             .pathParam("id", bookingId)
             .when()
             .get("/booking/{id}")
@@ -75,10 +73,8 @@ public class BookingApiClient {
     }
 
     public Response partiallyUpdateBooking(int bookingId, Booking booking, String token) {
-        return given()
-            .baseUri(cfg.bookingUrl())
+        return given(spec)
             .cookie("token", token)
-            .contentType(ContentType.JSON)
             .body(booking)
             .pathParam("bookingId", bookingId)
             .when()
@@ -89,10 +85,8 @@ public class BookingApiClient {
     }
 
     public Response deleteBooking(int bookingId) {
-        return given()
-            .baseUri(cfg.bookingUrl())
+        return given(spec)
             .cookie("token", getToken())
-            .contentType(ContentType.JSON)
             .pathParam("bookingId", bookingId)
             .delete("/booking/{bookingId}")
             .then()
