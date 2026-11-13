@@ -15,9 +15,7 @@ public class RestAssuredSpec {
         .log().body();
 
     public static ResponseSpecification resSpec = new ResponseSpecBuilder()
-        .log(LogDetail.STATUS)
         .log(LogDetail.BODY)
-        .log(LogDetail.HEADERS)
         .build();
 
     public static void setupRestAssured() {
