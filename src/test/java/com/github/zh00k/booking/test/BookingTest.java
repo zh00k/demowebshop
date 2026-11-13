@@ -4,9 +4,12 @@ import com.github.zh00k.booking.clients.BookingApiClient;
 import com.github.zh00k.booking.dto.AuthResponse;
 import com.github.zh00k.booking.dto.Booking;
 import com.github.zh00k.booking.dto.BookingDates;
+import com.github.zh00k.booking.dto.BookingId;
 import com.github.zh00k.booking.dto.BookingResponse;
 import com.github.zh00k.booking.steps.BookingSteps;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.response.Response;
+import net.datafaker.Faker;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
@@ -20,11 +23,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Named.named;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class BookingTest extends BaseApiTest {
-    private final        BookingApiClient bookingApiClient = new BookingApiClient();
-    private final        BookingSteps     bookingSteps     = new BookingSteps();
+    private final BookingApiClient bookingApiClient = new BookingApiClient();
+    private final BookingSteps     bookingSteps     = new BookingSteps();
+    private final Faker            faker            = new Faker();
 
     static Stream<Arguments> missingRequiredFields() {
         return Stream.of(arguments(named("missing firstname", validBooking().firstname(null).build())),
@@ -158,5 +165,30 @@ public class BookingTest extends BaseApiTest {
 
         Response getBookingRes = bookingApiClient.getBooking(bookingId);
         assertThat(getBookingRes.getStatusCode()).isEqualTo(404);
+    }
+
+    @Test
+    @Tags({@Tag("API"), @Tag("positive"), @Tag("Booking")})
+    void lastNameFilterReturnsMatchingBookingIds() {
+        String        lastName   = faker.name().lastName();
+        List<Integer> bookingIds = new ArrayList<>();
+        int           bookingQty = 5;
+
+        for (int i = 0; i < bookingQty; i++) {
+            Booking booking   = validBooking().lastname(lastName).build();
+            Integer bookingId = bookingSteps.createBooking(booking).getBookingid();
+            bookingIds.add(bookingId);
+        }
+
+        Response res = bookingApiClient.getBookings(Map.of("lastname", lastName));
+        assertThat(res.statusCode()).isEqualTo(200);
+
+        List<BookingId> bookings = res.as(new TypeRef<List<BookingId>>() {});
+        assertThat(bookings)
+            .hasSize(bookingQty)
+            .doesNotHaveDuplicates()
+            .doesNotContainNull()
+            .extracting(BookingId::bookingId)
+            .containsExactlyInAnyOrderElementsOf(bookingIds);
     }
 }

@@ -12,6 +12,8 @@ import io.restassured.specification.RequestSpecification;
 
 import static io.restassured.RestAssured.given;
 
+import java.util.Map;
+
 public class BookingApiClient {
     private static final BookingConfig cfg = BookingApiConfig.getBookingConfig();
 
@@ -67,6 +69,16 @@ public class BookingApiClient {
             .pathParam("id", bookingId)
             .when()
             .get("/booking/{id}")
+            .then()
+            .extract()
+            .response();
+    }
+
+    public Response getBookings(Map<String, Object> queryParams) {
+        return given(spec)
+            .queryParams(queryParams)
+            .log().params()
+            .get("/booking")
             .then()
             .extract()
             .response();

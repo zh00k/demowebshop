@@ -6,10 +6,12 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 
+import static com.github.zh00k.booking.util.CustomAllureListener.withCustomTemplates;
 import static io.restassured.RestAssured.with;
 
 public class RestAssuredSpec {
     public static RequestSpecification reqSpec = with()
+        .filter(withCustomTemplates())
         .log().uri()
         .log().headers()
         .log().body();
